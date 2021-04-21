@@ -6,14 +6,57 @@
 /*   By: vmelkony <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 18:23:41 by vmelkony          #+#    #+#             */
-/*   Updated: 2021/04/20 19:14:55 by vmelkony         ###   ########.fr       */
+/*   Updated: 2021/04/21 18:48:25 by vmelkony         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+char	*only_last_line(char *str)
+{
+	int		i;
+	int		j;
+	char	*result;
 
-int get_next_line(int fd, char **line)
+	i = 0;
+	while(str[i] && str[i] != '\n')
+		i++;
+	result = malloc(sizeof(char) * (ft_strlen(str) - 1));
+	if (!result)
+		return (0);
+	i++;
+	j = 0;
+	while (str[i])
+		result[j++] = str[i++];
+	result[j] = '\0';
+	free(save);
+	return (result);
+}
+
+char	*save_cpy(char *str)
+{
+	char	*result;
+	int		i;
+
+	i = 0;
+	while (!str)
+		return (0);
+	while(str[i] && str[i] != '\n')
+		i++;
+	result = malloc(sizeof(char) * i);
+	if (!result)
+		return (0);
+	i = 0;
+	while(str[i] && str[i] != '\n')
+	{
+		result[i] = str[i];
+		i++;
+	}
+	result[i] = '\0';
+	return (result);
+}
+
+int		get_next_line(int fd, char **line)
 {
 	char *buffer;
 	static char *save;
@@ -37,6 +80,9 @@ int get_next_line(int fd, char **line)
 		ft_strjoin(save, buffer);	
 	}
 	free(buffer);
-	//TODO: get_line and get_save and understand what are they doing
-
+	*line = save_cpy(save);
+	save = only_last_line(save);
+	if (reader == 0)
+		return (0);
+	return (1);
 }
