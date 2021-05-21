@@ -6,7 +6,7 @@
 /*   By: vmelkony <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/20 19:04:59 by vmelkony          #+#    #+#             */
-/*   Updated: 2021/04/20 19:13:22 by vmelkony         ###   ########.fr       */
+/*   Updated: 2021/04/23 20:16:54 by vmelkony         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+# include <stdio.h>
 
 int					get_next_line(int fd, char **line);
-int					has_return(char *str);
-
-size_t				ft_strlen(const char *s);
-
-char				*ft_strjoin(const char *s1, const char *s2);
+int					has_new_line(char *str);
+int                   ft_strchr(const char *s, int c);
+unsigned long        ft_strlen(const char *s);
+char                *ft_strjoin(char *memory, char *buffer);
 
 #endif

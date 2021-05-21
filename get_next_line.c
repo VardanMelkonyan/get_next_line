@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vmelkony <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/20 18:23:41 by vmelkony          #+#    #+#             */
-/*   Updated: 2021/04/21 18:48:25 by vmelkony         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 
 char	*only_last_line(char *str)
@@ -19,17 +7,24 @@ char	*only_last_line(char *str)
 	char	*result;
 
 	i = 0;
-	while(str[i] && str[i] != '\n')
+	if (!str)
+		return(NULL);
+	while(str[i] != '\0' && str[i] != '\n')
 		i++;
-	result = malloc(sizeof(char) * (ft_strlen(str) - 1));
+	if (str[i] == '\0')
+	{
+		free(str);
+		return(NULL);
+	}
+	result = malloc(sizeof(char) * (ft_strlen(str) -1 ));
 	if (!result)
-		return (0);
+		return (NULL);
 	i++;
 	j = 0;
 	while (str[i])
 		result[j++] = str[i++];
 	result[j] = '\0';
-	free(save);
+	free(str);
 	return (result);
 }
 
@@ -39,15 +34,13 @@ char	*save_cpy(char *str)
 	int		i;
 
 	i = 0;
-	while (!str)
-		return (0);
-	while(str[i] && str[i] != '\n')
+	while(str && str[i] != '\n' && str[i] != '\0')
 		i++;
 	result = malloc(sizeof(char) * i);
 	if (!result)
-		return (0);
+		return (NULL);
 	i = 0;
-	while(str[i] && str[i] != '\n')
+	while(str && str[i] != '\n' && str[i] != '\0')
 	{
 		result[i] = str[i];
 		i++;
@@ -64,25 +57,22 @@ int		get_next_line(int fd, char **line)
 
 	if (fd < 0 || !line || BUFFER_SIZE <= 0)
 		return (-1);
-	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buffer)
+	if(!(buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1))))
 		return (-1);
 	reader = 1;
-	while (!has_next_line(save) && reader != 0)
+	while ((reader = read(fd, buffer, BUFFER_SIZE)) > 0)
 	{
-		reader = read(fd, buffer, BUFFER_SIZE);
-		if (reader == -1)
-		{
-			free(buffer);
-			return (-1);
-		}
 		buffer[reader] = '\0';
-		ft_strjoin(save, buffer);	
+		save = ft_strjoin(save, buffer);
+		if (ft_strchr(save, '\0') || ft_strchr(save, '\n'))
+			break;
 	}
 	free(buffer);
+	if (reader < 0)
+		return (-1);
 	*line = save_cpy(save);
 	save = only_last_line(save);
-	if (reader == 0)
+	if (reader == 0 && !save)
 		return (0);
 	return (1);
 }
